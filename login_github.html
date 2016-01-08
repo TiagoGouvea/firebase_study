@@ -27,39 +27,14 @@
             console.log("Login Failed!", error);
         } else {
             console.log("Authenticated successfully with payload:", authData);
+            alert("Welcome "+authData.github.displayName+"! You have "+authData.github.cachedUserProfile.followers+" followers and "+authData.github.cachedUserProfile.public_repos+" public repositories. See console log to all user data.");
         }
     }
 
     // Or via popular OAuth providers ("facebook", "github", "google", or "twitter")
     ref.authWithOAuthPopup("github", authHandler, {scope:"user"});
-    ref.authWithOAuthRedirect("github", authHandler);
+    //ref.authWithOAuthRedirect("github", authHandler);
 </script>
-
-<script>
-    window.fbAsyncInit = function() {
-        FB.init({
-            appId      : '292589600802813',
-            xfbml      : true,
-            version    : 'v2.5'
-        });
-    };
-
-    (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-</script>
-
-<div
-        class="fb-like"
-        data-share="true"
-        data-width="450"
-        data-show-faces="true">
-</div>
-
 
 </body>
 </html>
