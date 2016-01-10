@@ -6,7 +6,7 @@
 require 'vendor/autoload.php';
 
 const DEFAULT_URL = 'https://luminous-inferno-1746.firebaseio.com/';
-const DEFAULT_TOKEN = 'type_yours!';
+const DEFAULT_TOKEN = 'type_yours'; // invalid token: MWpTIzTvnb2KRgdKwojHYmkYzhWo0b7ArnOfQDCd1
 const DEFAULT_PATH = '/firebase/example';
 
 $firebase = new \Firebase\FirebaseLib(DEFAULT_URL, DEFAULT_TOKEN);
@@ -32,5 +32,5 @@ var_dump($name);
 $names = $firebase->get(DEFAULT_PATH . '/name');
 var_dump($names);
 
-$root = $firebase->get(DEFAULT_PATH . '/');
+$root = $firebase->get(DEFAULT_PATH . '/root');
 var_dump($root);

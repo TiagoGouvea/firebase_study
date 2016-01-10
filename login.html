@@ -3,8 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
 </head>
 <body>
+    <div id="login">
+    <h1>Login</h1>
+    <!--<button id="facebook_login">Facebook Login</button><br>-->
+    <button id="github_login">Github Login</button><br>
+    <!--<button id="google_login">Google Login</button><br>-->
+    <button id="twitter_login">Twitter Login</button><br>
+    </div>
+    <div>
+    <h1>User data</h1>
+        <div id="user_data"></div>
+        <div id="user_data_githut"></div>
+        <div id="user_data_facebook"></div>
+        <div id="user_data_twitter"></div>
+    </div>
+<script>
+    // DOCS: https://www.firebase.com/docs/web/guide/user-auth.html
+    //       https://www.firebase.com/docs/web/guide/login/github.html
+    // Register the callback to be fired every time auth state changes
+    var ref = new Firebase("https://luminous-inferno-1746.firebaseio.com");
+    ref.onAuth(authDataCallback);
+
+
+    var user = {
+        uid:null,
+        displayName:null,
+        github:null,
+        twitter:null};
+
+    document.getElementById('facebook_login').onclick = function(){
+        console.log('facebook');
+    };
+    document.getElementById('github_login').onclick = function(){
+        ref.authWithOAuthPopup("github", authHandler, {scope:"user,email"});
+    };
+    document.getElementById('twitter_login').onclick = function(){
+        ref.authWithOAuthPopup("twitter", authHandler, {scope:"user,email"});
+    };
+    document.getElementById('google_login').onclick = function(){
+        ref.authWithOAuthPopup("google", authHandler, {scope:"user,email"});
+    };
+
+    // Or via popular OAuth providers ("facebook", "github", "google", or "twitter")
+
+
+    // Create a callback which logs the current auth state
+    function authDataCallback(authData) {
+        if (authData) {
+            console.log("User " + authData.uid + " is logged in with " + authData.provider);
+        } else {
+            console.log("User is logged out");
+        }
+    }
+
+    // Create a callback to handle the result of the authentication
+    function showUserData() {
+        document.getElementById('user_data').innerHTML=
+                "Uid: "+user.uid+"<br>"+
+                "Name: "+user.displayName
+        ;
+        if (user.twitter_id!=undefined){
+            document.getElementById('user_data_twitter').innerHTML=
+                    "Username: "+user.twitter.screen_name;
+            ;
+        }
+    }
+
+    function storeUserData() {
+        // set firebase data
+        var userRef = ref.child('users/'+user.uid);
+        userRef.set(user);
+        console.log('user saved');
+    }
+    function authHandler(error, authData) {
+        if (error) {
+            console.log("Login Failed!", error);
+        } else {
+            console.log("Authenticated successfully with payload:", authData);
+            //alert("Welcome "+authData.github.displayName+"! You have "+authData.github.cachedUserProfile.followers+" followers and "+authData.github.cachedUserProfile.public_repos+" public repositories. See console log to all user data.");
+
+            // General user data
+            user.uid = authData.uid;
+
+            // Store user data on firebase
+            if (authData.provider=="twitter"){
+                user.displayName = authData.twitter.displayName;
+                user.twitter = authData.twitter;
+            }
+            if (authData.provider=="github"){
+                user.displayName = authData.github.displayName;
+                user.github = authData.github;
+            }
+
+            showUserData();
+            storeUserData();
+        }
+    }
+
+
+</script>
 
 </body>
 </html>
